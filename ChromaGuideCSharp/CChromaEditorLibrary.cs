@@ -742,7 +742,7 @@ namespace ChromaSDK
         }
 
         /// <summary>
-        /// Multiple the color intensity of all frames
+        /// Multiply the color intensity of all frames
         /// </summary>
         /// <param name="animation"></param>
         /// <param name="intensity"></param>
@@ -761,6 +761,31 @@ namespace ChromaSDK
             catch (Exception ex)
             {
                 Debug.LogError(string.Format("Failed to multiply intensity animation: {0} exception={1}", animation, ex));
+            }
+            FreeIntPtr(lpData);
+#endif
+        }
+
+        /// <summary>
+        /// Multiply the color intensity of all frames
+        /// </summary>
+        /// <param name="animation"></param>
+        /// <param name="intensity"></param>
+		public static void MultiplyIntensityAllFramesRGBName(string animation, int red, int green, int blue)
+        {
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            string path = GetStreamingPath(animation);
+            IntPtr lpData = GetIntPtr(path);
+            try
+            {
+                if (lpData != IntPtr.Zero)
+                {
+                    PluginMultiplyIntensityAllFramesRGBName(lpData, red, green, blue);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(string.Format("Failed to multiply intensity rgb animation: {0} exception={1}", animation, ex));
             }
             FreeIntPtr(lpData);
 #endif
@@ -1014,6 +1039,14 @@ namespace ChromaSDK
         /// <param name="intensity"></param>
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         private static extern void PluginMultiplyIntensityAllFramesName(IntPtr path, float intensity);
+
+        /// <summary>
+        /// Multiply the rgb intensity of all frames
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="intensity"></param>
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void PluginMultiplyIntensityAllFramesRGBName(IntPtr path, int red, int green, int blue);
 
         /// <summary>
         /// Get the Max Leds for 1D Devices
